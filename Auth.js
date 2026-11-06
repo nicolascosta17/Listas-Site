@@ -1,8 +1,8 @@
 // auth.js — login, cadastro e banco de dados (Supabase) para o Minhas listas
 // 1) Preencha as duas linhas abaixo com os dados do seu projeto Supabase
 //    (Project Settings > API: "Project URL" e a chave "anon public").
-const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_PROJETO';
-const SUPABASE_KEY = 'COLE_AQUI_A_CHAVE_ANON';
+const SUPABASE_URL = 'https://dbzgcydwevpjsfindwcx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_SJIFc-jOXfQdYJjrkH334A_UAw3_1uG';
 
 const Auth = (() => {
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);

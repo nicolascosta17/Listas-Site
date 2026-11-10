@@ -6,7 +6,7 @@ const SUPABASE_KEY = 'sb_publishable_SJIFc-jOXfQdYJjrkH334A_UAw3_1uG';
 
 const Auth = (() => {
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  let user = null, onData = null, timer = null;
+  let user = null, onData = null, timer = null, pendente = null, salvando = null, version = 0;
 
   const erro = m => ({
     'Invalid login credentials': 'E-mail ou senha incorretos.',
@@ -56,13 +56,63 @@ const Auth = (() => {
     onData(d && d.lists ? d : null);
   }
 
+  // Persistência no Supabase com confirmação de sucesso/erro.
+  // O snapshot evita que uma gravação anterior use dados modificados posteriormente.
+  const avisar = (status, version, message = '') =>
+    document.dispatchEvent(new CustomEvent('listas:save', {detail:{status,version,message}}));
+
+  function enfileirar(dados) {
+    const item = {dados: JSON.parse(JSON.stringify(dados)), versao: ++version};
+    pendente = item;
+    avisar('queued', item.versao);
+    return item.versao;
+  }
+
+  async function enviar() {
+    clearTimeout(timer);
+    timer = null;
+    if (salvando) {
+      try { await salvando; } catch(e) { /* o erro já foi informado */ }
+    }
+    if (!pendente) return;
+    const item = pendente;
+    pendente = null;
+    avisar('saving', item.versao);
+    const tentativa = (async () => {
+      const {error} = await sb.from('listas_dados').upsert({
+        user_id: user.id, dados: item.dados, updated_at: new Date().toISOString()
+      });
+      if (error) throw new Error(error.message);
+    })();
+    salvando = tentativa;
+    try {
+      await tentativa;
+      avisar('saved', item.versao);
+    } catch (e) {
+      if (!pendente) pendente = item;
+      avisar('error', item.versao, e.message);
+      throw e;
+    } finally {
+      if (salvando === tentativa) salvando = null;
+    }
+    if (pendente) return enviar();
+  }
+
   function salvar(S) {
     if (!user) return;
+    const v = enfileirar(S);
     clearTimeout(timer);
-    timer = setTimeout(async () => {
-      const { error } = await sb.from('listas_dados').upsert({ user_id: user.id, dados: S, updated_at: new Date().toISOString() });
-      if (error) console.error('Erro ao salvar:', error.message);
-    }, 600);
+    timer = setTimeout(() => enviar().catch(e => {
+      console.error('Erro ao salvar:', e.message);
+    }), 600);
+    return v;
+  }
+
+  async function salvarAgora(S) {
+    if (!user) throw new Error('Faça login para salvar seus dados.');
+    const v = enfileirar(S);
+    await enviar();
+    return v;
   }
 
   function start(cb) {
@@ -83,5 +133,5 @@ const Auth = (() => {
     if (e.target.closest('[data-lo]')) sb.auth.signOut().then(() => location.reload());
   });
 
-  return { start, save: salvar };
+  return { start, save: salvar, saveNow: salvarAgora };
 })();

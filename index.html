@@ -106,7 +106,7 @@ main{height:100%}
 <aside id="sb"></aside>
 <main id="app"></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script src="auth.js"></script>
+<script src="Auth.js"></script>
 <script>
 const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -213,7 +213,10 @@ secs:[{h:'Por etapa',cols:['Etapa','Feitas','Faltam','%'],rows:l.tasks.map(t=>{c
 {h:'Pendências ('+m.length+')',cols:['Empresa','Etapas faltantes','Observação'],rows:m}]};
 }
 const a=R.w,b=addD(a,7),ev=[];let und=0;
-for(const k in l.checks){const v=l.checks[k],[pi,ci,ti]=k.split('|'),pp=l.periods.find(x=>x.id===pi),c=l.companies.find(x=>x.id===ci),t=l.tasks.find(x=>x.id===ti);
+for(const k in l.checks){
+const v=l.checks[k],[pi,ci,ti]=k.split('|'),pp=l.periods.find(x=>x.id===pi);
+const historico=l.periodData?.[pi];
+const c=(historico?.companies||l.companies).find(x=>x.id===ci),t=(historico?.tasks||l.tasks).find(x=>x.id===ti);
 if(!pp||!c||!t)continue;if(v<1e12){und++;continue}if(v>=a&&v<b)ev.push({v,pp,c,t})}
 ev.sort((x,y)=>x.v-y.v);
 const p=P(l),m=pend(l,p),days=DN.map((d,i)=>{const s=addD(a,i);return[d+' '+fd(new Date(s)),ev.filter(e=>e.v>=s&&e.v<addD(a,i+1)).length]});
@@ -275,6 +278,7 @@ Auth.start(d=>{S=d||seed();render()});
 </script>
 <script src="navegacao-colunas.js"></script>
 <script src="campos-personalizados.js"></script>
+<script src="periodo-edicao.js"></script>
 
 </body>
 </html>

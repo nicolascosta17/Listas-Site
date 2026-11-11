@@ -97,8 +97,18 @@
 
   // Filtra as gravações automáticas: no modo manual, mudanças ficam pendentes
   // e o estado não é enviado ao Supabase até clicar em Salvar.
+  Auth.isDirty = () => pendente || salvando || !!erro;
+
   Auth.save = function(estado) {
     if (!estado || !estado.lists) return;
+    if (Auth.isRefreshing) {
+      ultimoSalvo = JSON.stringify(estado);
+      ultimaFila = ultimoSalvo;
+      pendente = false;
+      erro = '';
+      atualizarStatus();
+      return;
+    }
     capturarTudo();
     const json = JSON.stringify(estado);
     if (ultimoSalvo === null) {
@@ -122,6 +132,14 @@
     }
     atualizarStatus();
   };
+
+  document.addEventListener('listas:remote', () => {
+    ultimoSalvo = JSON.stringify(S);
+    ultimaFila = ultimoSalvo;
+    pendente = false;
+    erro = '';
+    atualizarStatus();
+  });
 
   document.addEventListener('listas:save', e => {
     const {status, version, message} = e.detail || {};

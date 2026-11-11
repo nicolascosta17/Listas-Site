@@ -7,6 +7,7 @@ const SUPABASE_KEY = 'sb_publishable_SJIFc-jOXfQdYJjrkH334A_UAw3_1uG';
 const Auth = (() => {
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   let user = null, onData = null, timer = null, pendente = null, salvando = null, version = 0;
+  let ultimaAtualizacao = null, verificacao = null, aplicandoRemoto = false, consultando = false;
 
   const erro = m => ({
     'Invalid login credentials': 'E-mail ou senha incorretos.',
@@ -46,14 +47,43 @@ const Auth = (() => {
   async function entrou(u) {
     user = u;
     document.querySelector('.au')?.remove();
-    const { data, error } = await sb.from('listas_dados').select('dados').eq('user_id', u.id).maybeSingle();
+    const { data, error } = await sb.from('listas_dados').select('dados, updated_at').eq('user_id', u.id).maybeSingle();
     if (error) { user = null; tela('in', 'Não foi possível carregar seus dados: ' + error.message); return; }
+    ultimaAtualizacao = data?.updated_at || null;
     let d = data && data.dados;
     if (!d) { // primeiro acesso: aproveita os dados que já estavam salvos neste navegador
       try { d = JSON.parse(localStorage.getItem('listas-v1')); } catch (e) {}
       if (d && d.lists) localStorage.removeItem('listas-v1');
     }
     onData(d && d.lists ? d : null);
+    if (verificacao) clearInterval(verificacao);
+    verificacao = setInterval(verificarOutrosComputadores, 10000);
+  }
+
+  // Consulta alterações feitas com a mesma conta em outros computadores.
+  // Nunca substitui edições locais pendentes, salvamentos em andamento ou formulários abertos.
+  async function verificarOutrosComputadores() {
+    if (!user || consultando || pendente || salvando || document.hidden ||
+        document.querySelector('.ov, .au') ||
+        document.activeElement?.matches('input, textarea, select, [contenteditable="true"]') ||
+        (typeof Auth.isDirty === 'function' && Auth.isDirty())) return;
+    consultando = true;
+    try {
+      const {data, error} = await sb.from('listas_dados')
+        .select('dados, updated_at').eq('user_id', user.id).maybeSingle();
+      if (error) throw error;
+      if (!data?.dados?.lists || !data.updated_at || data.updated_at === ultimaAtualizacao) return;
+      if (pendente || salvando || document.querySelector('.ov, .au') ||
+          document.activeElement?.matches('input, textarea, select, [contenteditable="true"]') ||
+          (typeof Auth.isDirty === 'function' && Auth.isDirty())) return;
+      aplicandoRemoto = true;
+      try {
+        onData(data.dados);
+        ultimaAtualizacao = data.updated_at;
+        document.dispatchEvent(new CustomEvent('listas:remote', {detail:{updatedAt:ultimaAtualizacao}}));
+      } finally { aplicandoRemoto = false; }
+    } catch (e) { console.warn('Não foi possível verificar atualizações:', e.message); }
+    finally { consultando = false; }
   }
 
   // Persistência no Supabase com confirmação de sucesso/erro.
@@ -79,10 +109,11 @@ const Auth = (() => {
     pendente = null;
     avisar('saving', item.versao);
     const tentativa = (async () => {
-      const {error} = await sb.from('listas_dados').upsert({
+      const {data, error} = await sb.from('listas_dados').upsert({
         user_id: user.id, dados: item.dados, updated_at: new Date().toISOString()
-      });
+      }).select('updated_at').single();
       if (error) throw new Error(error.message);
+      ultimaAtualizacao = data.updated_at;
     })();
     salvando = tentativa;
     try {
@@ -133,5 +164,7 @@ const Auth = (() => {
     if (e.target.closest('[data-lo]')) sb.auth.signOut().then(() => location.reload());
   });
 
-  return { start, save: salvar, saveNow: salvarAgora };
+  return { start, save: salvar, saveNow: salvarAgora,
+    get isRefreshing() { return aplicandoRemoto; }
+  };
 })();

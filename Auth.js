@@ -4,9 +4,6 @@
 const SUPABASE_URL = 'https://dbzgcydwevpjsfindwcx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_SJIFc-jOXfQdYJjrkH334A_UAw3_1uG';
 
-// Versão independente: usa tabela dedicada, sem alterar os dados do Listas-Site original.
-const STORAGE_TABLE = 'atoms_listas_dados';
-
 const Auth = (() => {
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   let user = null, onData = null, timer = null, pendente = null, salvando = null, version = 0;
@@ -50,7 +47,7 @@ const Auth = (() => {
   async function entrou(u) {
     user = u;
     document.querySelector('.au')?.remove();
-    const { data, error } = await sb.from(STORAGE_TABLE).select('dados, updated_at').eq('user_id', u.id).maybeSingle();
+    const { data, error } = await sb.from('listas_dados').select('dados, updated_at').eq('user_id', u.id).maybeSingle();
     if (error) { user = null; tela('in', 'Não foi possível carregar seus dados: ' + error.message); return; }
     ultimaAtualizacao = data?.updated_at || null;
     let d = data && data.dados;
@@ -72,7 +69,7 @@ const Auth = (() => {
         (typeof Auth.isDirty === 'function' && Auth.isDirty())) return;
     consultando = true;
     try {
-      const {data, error} = await sb.from(STORAGE_TABLE)
+      const {data, error} = await sb.from('listas_dados')
         .select('dados, updated_at').eq('user_id', user.id).maybeSingle();
       if (error) throw error;
       if (!data?.dados?.lists || !data.updated_at || data.updated_at === ultimaAtualizacao) return;
@@ -112,7 +109,7 @@ const Auth = (() => {
     pendente = null;
     avisar('saving', item.versao);
     const tentativa = (async () => {
-      const {data, error} = await sb.from(STORAGE_TABLE).upsert({
+      const {data, error} = await sb.from('listas_dados').upsert({
         user_id: user.id, dados: item.dados, updated_at: new Date().toISOString()
       }).select('updated_at').single();
       if (error) throw new Error(error.message);

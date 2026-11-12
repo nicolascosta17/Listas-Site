@@ -420,3 +420,9 @@ h1,h2,h3,h4{font-family:'Plus Jakarta Sans','DM Sans',sans-serif;letter-spacing:
  .simple-table th{background:#eee!important;color:#222!important}
  .bar-track{background:#eee}
 }
+
+.sidebar-toggle{margin-left:auto;flex:none;display:flex;align-items:center;justify-content:center;background:#ffffff11;color:#baa8bf;width:29px;height:29px;border-radius:8px}
+.sidebar-toggle:hover{background:#ffffff20;color:#fff}
+.is-collapsed .sidebar-head{flex-wrap:wrap;justify-content:center;gap:12px}
+.is-collapsed .sidebar-toggle{margin-left:0}
+@media(max-width:760px){.sidebar-toggle{display:none}}

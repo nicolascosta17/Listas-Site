@@ -339,11 +339,7 @@ export default function App(){
             l.periodData[p.id].sidebarCollapsed=!collapsed;})}>
           {collapsed?<PanelLeftOpen size={17}/>:<PanelLeftClose size={17}/>}
         </button></div>
-      <div className="sidebar-group-title">{!collapsed?'ESPAÇO DE TRABALHO':''}</div>
-      <button className="nav-item nav-active" onClick={()=>setMobileMenu(false)}>
-        <LayoutDashboard size={19}/><span>Painel de listas</span></button>
-      <div className="sidebar-divider"/>
-      <div className="list-section-title"><span>SUAS LISTAS</span>
+      <div className="list-section-title"><span>MINHAS LISTAS</span>
         <button title="Criar nova lista" aria-label="Criar nova lista" onClick={()=>openSimple('newList')}>
           <Plus size={17}/></button></div>
       <nav className="nav-lists" aria-label="Listas">
@@ -355,11 +351,8 @@ export default function App(){
             <span className="list-label">{l.name}</span><small>{c.done}/{c.total}</small></button>;
         })}
       </nav>
-      <button className="sidebar-new" onClick={()=>openSimple('newList')}><Plus size={17}/><span>Nova lista</span></button>
       <div className="sidebar-grow"/>
       <div className="sidebar-bottom">
-        <button className="side-bottom-action" onClick={()=>setDialog({type:'history'})}><History size={18}/><span>Histórico</span></button>
-        <button className="side-bottom-action" onClick={()=>setDialog({type:'backup'})}><ArchiveRestore size={18}/><span>Backup da conta</span></button>
         <button className="side-bottom-action" onClick={()=>setDialog({type:'settings'})}><Settings2 size={18}/><span>Configurações</span></button>
         <div className="sidebar-account">
           <div className="avatar">{user.email?.[0]?.toUpperCase()||'U'}</div>
@@ -374,7 +367,7 @@ export default function App(){
         <b>Minhas Listas</b><span className="mobile-top-spacer"/>
         <button className="icon-button" onClick={()=>setDialog({type:'settings'})} aria-label="Configurações"><Settings2 size={20}/></button></div>
       <header className="topbar">
-        <div className="breadcrumbs"><span>Workspace</span><ChevronRight size={15}/><b>Minhas Listas</b></div>
+        <div className="topbar-title"><span>CONTIDADOS</span><i></i><b>Minhas Listas</b></div>
         <div className="topbar-right">
           <div className={'sync-indicator '+syncStatus}>
             {syncStatus==='saved'?<CheckCircle2 size={16}/>:
@@ -395,46 +388,52 @@ export default function App(){
           <span>{syncStatus==='conflict'?'Existe uma versão mais recente no banco de dados. Exporte um backup antes de carregar outra versão.':'O salvamento falhou. Verifique a conexão e tente novamente.'}</span>
           <Button icon={RotateCcw} onClick={syncStatus==='conflict'?reload:persist}>{syncStatus==='conflict'?'Recarregar':'Tentar novamente'}</Button>
         </div>}
+
         <div className="page-intro">
-          <div><div className="eyebrow"><Sparkles size={14}/> SEU PAINEL DE CONTROLE</div>
-            <h1>{current.name}</h1>
-            <p>Organize suas empresas, acompanhe entregas e mantenha tudo em dia.</p></div>
+          <div className="page-title-area">
+            <span className="page-kicker">LISTA ATIVA</span>
+            <div className="page-title-line">
+              <h1>{current.name}</h1>
+              <button className="title-edit" title="Renomear lista" aria-label="Renomear lista"
+                onClick={()=>openSimple('rename',current.name)}><Edit3 size={17}/></button>
+            </div>
+          </div>
           <div className="intro-actions">
-            <Button icon={Edit3} onClick={()=>openSimple('rename',current.name)}>Renomear</Button>
             <div className="menu-wrap">
-              <Button icon={MoreHorizontal} onClick={()=>setMenuOpen(!menuOpen)}>Mais opções</Button>
+              <button className="more-button" onClick={()=>setMenuOpen(!menuOpen)}
+                aria-expanded={menuOpen} aria-haspopup="true"><MoreHorizontal size={19}/> Opções <ChevronDown size={14}/></button>
               {menuOpen&&<div className="dropdown-menu">
                 <button onClick={()=>{setDialog({type:'tasks'});setMenuOpen(false)}}><Columns3 size={17}/>Editar etapas</button>
-                <button onClick={()=>{setDialog({type:'periods'});setMenuOpen(false)}}><CalendarDays size={17}/>Editar períodos</button>
-                <button onClick={()=>{setDialog({type:'transfer'});setMenuOpen(false)}}><Copy size={17}/>Transferir dados</button>
+                <button onClick={()=>{setDialog({type:'periods'});setMenuOpen(false)}}><CalendarDays size={17}/>Gerenciar meses</button>
+                <button onClick={()=>{setDialog({type:'transfer'});setMenuOpen(false)}}><Copy size={17}/>Copiar ou importar dados</button>
+                <button onClick={()=>{setDialog({type:'reports'});setMenuOpen(false)}}><FileBarChart2 size={17}/>Relatórios</button>
+                <div className="dropdown-divider"/>
+                <button onClick={()=>{setDialog({type:'history'});setMenuOpen(false)}}><History size={17}/>Histórico</button>
+                <button onClick={()=>{setDialog({type:'backup'});setMenuOpen(false)}}><ArchiveRestore size={17}/>Backup</button>
+                <button onClick={()=>{setDialog({type:'settings'});setMenuOpen(false)}}><Settings2 size={17}/>Aparência</button>
+                <div className="dropdown-divider"/>
                 <button onClick={()=>{setDialog({type:'deleteList'});setMenuOpen(false)}} className="danger-ink"><Trash2 size={17}/>Excluir lista</button>
               </div>}</div>
           </div>
         </div>
-        <section className="summary-grid">
-          <div className="metric-card"><div className="metric-heading">Total de empresas<span className="metric-icon metric-purple"><Building2 size={20}/></span></div>
-            <strong>{metrics.total}</strong><div className="metric-caption">Cadastradas nesta competência</div></div>
-          <div className="metric-card"><div className="metric-heading">Concluídas<span className="metric-icon metric-green"><CheckCircle2 size={20}/></span></div>
-            <strong>{metrics.done}</strong><div className="metric-caption"><span className="dot green"/> Todas as etapas realizadas</div></div>
-          <div className="metric-card"><div className="metric-heading">Em andamento<span className="metric-icon metric-orange"><Clock3 size={20}/></span></div>
-            <strong>{metrics.part}</strong><div className="metric-caption"><span className="dot orange"/> Com tarefas em aberto</div></div>
-          <div className="metric-card"><div className="metric-heading">Pendentes<span className="metric-icon metric-red"><AlertTriangle size={20}/></span></div>
-            <strong>{metrics.pend}</strong><div className="metric-caption"><span className="dot red"/> Ainda não iniciadas</div></div>
+        <section className="compact-summary" aria-label="Resumo da competência">
+          <div className="summary-stats">
+            <span><b>{metrics.total}</b> empresas</span>
+            <span className="summary-stat-completed"><b>{metrics.done}</b> concluídas</span>
+            <span><b>{metrics.part+metrics.pend}</b> pendentes</span>
+          </div>
+          <div className="mini-progress">
+            <span>{metrics.percent}% concluído</span>
+            <div className="mini-progress-track"><i style={{width:metrics.percent+'%'}}/></div>
+          </div>
         </section>
-        <div className="progress-banner">
-          <div className="progress-left"><div className="progress-emblem"><CheckSquare size={21}/></div>
-            <div><b>Progresso da competência</b><span>{metrics.done} de {metrics.total} empresas concluídas</span></div></div>
-          <div className="progress-meter"><div><span>Conclusão geral</span><strong>{metrics.percent}%</strong></div>
-            <div className="progress-track"><div style={{width:metrics.percent+'%'}}/></div></div>
-        </div>
         <section className="workspace-card">
+
           <div className="workspace-heading">
-            <div><div className="section-overline">GERENCIAMENTO</div><h2>Controle de empresas</h2>
-              <p>Selecione uma competência para visualizar os registros.</p></div>
+            <div><h2>Empresas</h2></div>
             <div className="section-actions">
+              <Button icon={Copy} onClick={()=>setDialog({type:'transfer'})}>Copiar dados</Button>
               <Button icon={FileBarChart2} onClick={()=>setDialog({type:'reports'})}>Relatórios</Button>
-              <Button icon={Copy} onClick={()=>setDialog({type:'transfer'})}>Copiar / importar</Button>
-              <Button icon={Plus} variant="primary" onClick={()=>document.getElementById('new-company-input')?.focus()}>Nova empresa</Button>
             </div>
           </div>
           <div className="period-line">
@@ -452,11 +451,11 @@ export default function App(){
           </div>
           <div className="table-toolbar">
             <div className="search-wrap"><Search size={19}/>
-              <input type="search" placeholder="Buscar empresa ou número…" value={query} onChange={e=>setQuery(e.target.value)}/>
+              <input type="search" placeholder="Buscar empresa…" value={query} onChange={e=>setQuery(e.target.value)}/>
               {query&&<button title="Limpar pesquisa" onClick={()=>setQuery('')}><X size={15}/></button>}</div>
             <div className="filter-tabs">
               <button className={filter==='all'?'active':''} onClick={()=>setFilter('all')}>Todas</button>
-              <button className={filter==='open'?'active':''} onClick={()=>setFilter('open')}>Pendentes</button>
+              <button className={filter==='open'?'active':''} onClick={()=>setFilter('open')}>Em aberto</button>
               <button className={filter==='done'?'active':''} onClick={()=>setFilter('done')}>Concluídas</button>
             </div>
             <div className="select-sort"><ArrowUpDown size={16}/><select value={data.sortOrders?.[current.id]||'number-asc'}
@@ -529,13 +528,11 @@ export default function App(){
           </div>
           <div className="table-footer"><span>Exibindo <b>{companies.length}</b> de <b>{metrics.total}</b> empresas</span>
             <div><label className="inline-check"><input type="checkbox" checked={data.autoSave!==false}
-              onChange={e=>modify(s=>{s.autoSave=e.target.checked;},true)}/>Salvar automaticamente</label>
+              onChange={e=>modify(s=>{s.autoSave=e.target.checked;},true)}/>Salvar automático</label>
               <Button icon={Save} onClick={persist} disabled={!dirtyRef.current}>Salvar agora</Button></div>
           </div>
         </section>
-        <footer className="page-footer"><span><ShieldCheck size={15}/> Seus dados são privados e armazenados no Supabase</span>
-          <span>Minhas Listas • React.js</span></footer>
-      </div></div>
+</div></div>
     </main>
 
     {dialog?.type==='transfer'&&<TransferDialog state={data} current={current} onClose={()=>setDialog(null)}

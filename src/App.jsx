@@ -262,7 +262,13 @@ export default function App(){
       for(const map of [l.checks,l.values])for(const key of Object.keys(map||{}))
         if(!keep.has(key.split('|')[0]))delete map[key];
       l.periods=periods.map(p=>({...p,name:p.name.trim()}));
-      if(!keep.has(oldId)){l.activePeriodId=null;s.per[l.id]=l.periods[0].id;}
+      if(!keep.has(oldId)){
+        const nextId=l.periods[0].id;
+        const next=l.periodData[nextId]||l.periodTemplate||{companies:[],tasks:[]};
+        l.companies=clone(next.companies||[]);
+        l.tasks=clone(next.tasks||[]);
+        l.activePeriodId=nextId;s.per[l.id]=nextId;
+      }
       ensureActive(s,l);syncActive(s,l);
     });notify('Períodos atualizados.');
   }
@@ -326,7 +332,13 @@ export default function App(){
     {mobileMenu&&<button className="mobile-overlay" aria-label="Fechar menu" onClick={()=>setMobileMenu(false)}/>}
     <aside className={'sidebar '+(mobileMenu?'sidebar-open':'')}>
       <div className="sidebar-head"><div className="brand-icon"><ListChecks size={24} strokeWidth={2.2}/></div>
-        <div className="brand-text"><b>Minhas Listas</b><span>CONTIDADOS WORKSPACE</span></div></div>
+        <div className="brand-text"><b>Minhas Listas</b><span>CONTIDADOS WORKSPACE</span></div>
+        <button className="sidebar-toggle" title={collapsed?"Expandir menu":"Recolher menu"}
+          aria-label={collapsed?"Expandir menu":"Recolher menu"}
+          onClick={()=>editCurrent((l,p)=>{l.periodData[p.id] ||= {};
+            l.periodData[p.id].sidebarCollapsed=!collapsed;})}>
+          {collapsed?<PanelLeftOpen size={17}/>:<PanelLeftClose size={17}/>}
+        </button></div>
       <div className="sidebar-group-title">{!collapsed?'ESPAÇO DE TRABALHO':''}</div>
       <button className="nav-item nav-active" onClick={()=>setMobileMenu(false)}>
         <LayoutDashboard size={19}/><span>Painel de listas</span></button>

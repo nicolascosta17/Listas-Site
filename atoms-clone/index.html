@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Minhas listas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f5f6f8;--sf:#fff;--tx:#181b22;--mu:#6b7280;--ln:#e4e6ea;--ok:#16a34a;--wa:#d97706;--ac:#4f46e5;--on:#fff;--r:12px;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+[data-theme=dark]{--bg:#111318;--sf:#1a1d24;--tx:#eceef2;--mu:#98a0ae;--ln:#2a2e38;--ok:#4ade80;--wa:#fbbf24;color-scheme:dark}
+[data-theme=sepia]{--bg:#efe7d6;--sf:#f9f3e5;--tx:#3a3226;--mu:#8a7d66;--ln:#ddd2ba;--ok:#2f7d3a;--wa:#b4690e}
+[data-theme=midnight]{--bg:#080c18;--sf:#0f1526;--tx:#e6eaf6;--mu:#8a94b0;--ln:#1e2740;--ok:#4ade80;--wa:#fbbf24;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:15px/1.4 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--tx);display:flex}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+#sb{width:260px;flex:none;background:var(--sf);border-right:1px solid var(--ln);padding:20px 14px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.brand{font-weight:700;font-size:18px;padding:0 8px 14px}
+.li{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:9px 10px;border-radius:calc(var(--r) - 3px);color:var(--mu)}
+.li:hover{background:var(--bg)}
+.li.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--tx);font-weight:600}
+.li small{color:var(--mu);font-weight:500;white-space:nowrap}
+.sbf{margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:12px}
+.btn{padding:9px 14px;border-radius:calc(var(--r) - 3px);border:1px solid var(--ln);background:var(--sf);font-weight:500}
+.btn:hover{border-color:var(--ac)}
+.btn.pri{background:var(--ac);color:var(--on);border-color:var(--ac)}
+.btn.dng{color:#dc2626}
+main{flex:1;min-width:0;overflow:auto;padding:28px clamp(16px,4vw,44px) 60px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.top h1{font-size:26px;margin:0;flex:1;min-width:180px;letter-spacing:-.01em}
+#menu{display:none}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+.tab{padding:7px 14px;border-radius:99px;color:var(--mu);white-space:nowrap}
+.tab:hover{color:var(--tx)}
+.tab.on{background:var(--ac);color:var(--on);font-weight:600}
+.stats{display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.stats b{font-size:22px;display:block;line-height:1.1}
+.stats span{color:var(--mu);font-size:13px}
+.bar{flex:1;min-width:160px;height:8px;border-radius:9px;background:var(--ln);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac);transition:width .25s}
+.tb{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.in{padding:9px 12px;border-radius:calc(var(--r) - 3px);border:1px solid var(--ln);background:var(--sf);min-width:0}
+.in:focus{outline:2px solid var(--ac);outline-offset:-1px;border-color:transparent}
+#q{flex:1;min-width:150px}
+.seg{display:flex;border:1px solid var(--ln);border-radius:calc(var(--r) - 3px);overflow:hidden;background:var(--sf)}
+.seg button{padding:8px 12px;color:var(--mu)}
+.seg button.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--tx);font-weight:600}
+.wrap{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th{text-align:left;font-weight:600;font-size:13px;color:var(--mu);padding:12px 12px;border-bottom:1px solid var(--ln);white-space:nowrap}
+td{padding:4px 12px;border-bottom:1px solid var(--ln)}
+tr:last-child td{border-bottom:0}
+td.c,th.c{text-align:center;width:1%}
+.ni,.no{width:100%;border:0;background:transparent;padding:8px 4px;border-radius:6px}
+.ni{font-weight:500;min-width:190px;text-transform:uppercase;font-size:14px}
+.no{color:var(--mu);min-width:130px}
+.ni:focus,.no:focus{background:var(--bg);outline:0}
+input[type=checkbox]{appearance:none;width:24px;height:24px;border:2px solid var(--ln);border-radius:calc(var(--r)/2.2);background:var(--sf);cursor:pointer;display:block;margin:auto;transition:.12s}
+input[type=checkbox]:hover{border-color:var(--ac)}
+input[type=checkbox]:checked{background:var(--ac) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7'/%3E%3C/svg%3E") center/80% no-repeat;border-color:var(--ac)}
+.st{font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.st.done{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.st.part{background:color-mix(in srgb,var(--wa) 16%,transparent);color:var(--wa)}
+.st.pend{background:var(--bg);color:var(--mu)}
+.x{color:var(--mu);font-size:20px;padding:2px 8px;border-radius:6px;opacity:.5}
+tr:hover .x,.x:focus{opacity:1}.x:hover{color:#dc2626}
+.empty{padding:36px;text-align:center;color:var(--mu)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.md{background:var(--sf);border-radius:calc(var(--r) + 4px);padding:22px;width:min(440px,100%);max-height:90vh;overflow:auto}
+.md h3{margin:0 0 14px;font-size:18px}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.er{display:flex;gap:6px;margin-bottom:8px}.er .in{flex:1}
+.dr{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--sf);border-left:1px solid var(--ln);padding:22px;overflow:auto;z-index:21;box-shadow:-8px 0 30px rgba(0,0,0,.15)}
+.dr h3{margin:0 0 4px}.dr h4{margin:22px 0 10px;font-size:13px;color:var(--mu);font-weight:600}
+.g{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.th{padding:12px;border:2px solid var(--ln);border-radius:var(--r);text-align:left;font-weight:600}
+.th.on{border-color:var(--ac)}
+.th i{display:block;height:18px;border-radius:5px;margin-top:8px}
+.sw{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sw button{width:32px;height:32px;border-radius:50%;border:3px solid var(--sf);box-shadow:0 0 0 2px var(--ln)}
+.sw button.on{box-shadow:0 0 0 2px var(--tx)}
+.sw input{width:40px;height:34px;border:0;padding:0;background:none;cursor:pointer}
+textarea.in{width:100%;height:90px;font:12px monospace;margin-top:8px}
+@media(max-width:800px){
+body{display:block}
+#sb{position:fixed;inset:0 auto 0 0;z-index:15;transform:translateX(-100%);transition:transform .2s;box-shadow:8px 0 30px rgba(0,0,0,.2);padding-top:calc(20px + env(safe-area-inset-top,0px))}
+body.sbo #sb{transform:none}
+#menu{display:inline-block}
+main{height:100%}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.rp{position:fixed;inset:0;z-index:18;background:var(--bg);overflow:auto}
+.rbar{position:sticky;top:0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px clamp(12px,3vw,32px);background:var(--sf);border-bottom:1px solid var(--ln)}
+.rbar .sp{flex:1}
+.rbody{max-width:860px;margin:24px auto;padding:28px clamp(16px,4vw,40px);background:var(--sf);border:1px solid var(--ln);border-radius:var(--r)}
+.rbody h1{margin:0 0 4px;font-size:24px}.rbody h2{font-size:16px;margin:26px 0 8px}
+.rst{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:6px}.rst b{font-size:24px;display:block;line-height:1.1}.rst span{color:var(--mu);font-size:13px}
+.rt{min-width:0;border:1px solid var(--ln)}.rt td,.rt th{padding:7px 10px;font-size:14px}.rt th{background:var(--bg)}
+@media print{html[data-theme]{--bg:#fff;--sf:#fff;--tx:#000;--mu:#555;--ln:#ccc}body{display:block;height:auto}body>*:not(.rp){display:none!important}.rp{position:static;overflow:visible}.rbar{display:none}.rbody{margin:0;border:0;max-width:none;padding:0}.rt th{background:#eee}tr{break-inside:avoid}}
+</style>
+</head>
+<body>
+<aside id="sb"></aside>
+<main id="app"></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="Auth.js"></script>
+<script>
+const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const M=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const RAW="AÇAI DA VILLA e-mail|ARIOVALDO|BAMPA E NEVES|BC CAMARGO|BEM BONITA|BENZE E BAMPA|BRASIL PET e-mail|BRUNO SUNDERMAN|C.V.S CALABREZE|CEJA MATRIZ E FILIAL (Adm e Presidente) e-mail|CFT|CLEBISON MARTINS|DANIEL MENDES ( CIDA )|DANIELA ALVES|EDNA MESSIAS TAVONI - MARISA|EMERSON CINTI ( LUCIANA MUNHOZ )|EMILIO SUNDERMAN|EVOLUIR ( LUCELI )|FÁBRICA DO PÃO ( ESTEFANO )|FLADEMIR ( ELISSANDRA )|GF COMERCIO|GUSTAVO ACHLES|JPS ENGENHARIA|KARINE AP. LIMA|M P DA COSTA ( Jhony ) e-mail|MADEITUR|MAISQBOM ( ALEXANDRE )|MARCELO ALVES|MARCIO HENRIQUE ( EDJANE )|MARESSA|MARISA TAVONI|MARIVALDO ANTUNES|MATHEUS BOTELHO ( MATHEUS e ADRIELI ) e-mail|MAZZETI ( LU MAZZETI ) e-mail|MOVEIS FERRARINI ( MAIRA )|MPS SUCATAS e-mail|MY PET'S|PAULO H FILIAL 0001 e 0002|PAULO H MATRIZ|POLIVINIL ( JUNIOR ) e-mail|POZZI & BAMPA e-mail|RAFAEL VILICEL ( CLAUDIO ITALIANO )|RECICLAGEM e-mail|REINALDO|REIS|RICARDO BARBIERI NEIAS|RN ENGENHARIA ( Adm RN e Marcos@rn ) e-mail|SÃO CARLOS SUITES ( Gerencia Hotel ) e-mail MIZ|VILLAMIX ( AÇAI DA VILLA ) e-mail|VIVIANY ARAUJO|VOLNEI ASSIS ( Carvalho Volnei )e-mail";
+const KEY='listas-v1';
+function seed(){
+const tasks=['Holerites enviados','FGTS enviado','DARF enviada'].map(name=>({id:uid(),name}));
+const re=/\s*e-mail(\s+MIZ)?\s*$/i;
+const companies=RAW.split('|').map(r=>({id:uid(),name:r.replace(re,'').replace(/\s+/g,' ').trim(),note:re.test(r)?'E-mail':''}));
+const periods=M.map(n=>({id:uid(),name:n+' 2026'}));
+const l={id:uid(),name:'Folha de pagamento 2026',tasks,periods,companies,checks:{}};
+return{lists:[l],cur:l.id,per:{[l.id]:periods[new Date().getMonth()].id},theme:{mode:'auto',accent:'#4f46e5',round:'12px'}};
+}
+let S=null;
+let Q='',F='all';
+const save=()=>{if(S)Auth.save(S)};
+const L=()=>S.lists.find(l=>l.id===S.cur)||S.lists[0];
+const P=l=>l.periods.find(p=>p.id===S.per[l.id])||l.periods[0];
+const ck=(l,p,c,t)=>!!l.checks[p.id+'|'+c.id+'|'+t.id];
+const stat=(l,p,c)=>{const n=l.tasks.filter(t=>ck(l,p,c,t)).length;return n===l.tasks.length?'done':n?'part':'pend'};
+const LBL={done:'Concluído',part:'Em andamento',pend:'Pendente'};
+function applyTheme(){
+const t=S.theme,r=document.documentElement;
+r.dataset.theme=t.mode==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t.mode;
+const n=parseInt(t.accent.slice(1),16),lum=.299*(n>>16)+.587*(n>>8&255)+.114*(n&255);
+r.style.setProperty('--ac',t.accent);r.style.setProperty('--on',lum>165?'#111':'#fff');r.style.setProperty('--r',t.round);
+}
+function render(){
+applyTheme();
+if(!S.lists.length){S.lists.push({id:uid(),name:'Nova lista',tasks:[{id:uid(),name:'Feito'}],periods:[{id:uid(),name:'Geral'}],companies:[],checks:{}});}
+if(!S.lists.find(l=>l.id===S.cur))S.cur=S.lists[0].id;
+const l=L(),p=P(l);
+$('#sb').innerHTML=`<div class="brand">Minhas listas</div>`+S.lists.map(x=>{const q=P(x),d=x.companies.filter(c=>stat(x,q,c)==='done').length;return`<button class="li ${x.id===l.id?'on':''}" data-a="list" data-id="${x.id}"><span>${esc(x.name)}</span><small>${d}/${x.companies.length}</small></button>`}).join('')+
+`<div class="sbf"><button class="btn pri" data-a="newList">+ Nova lista</button><button class="btn" data-a="look">Aparência</button></div>`;
+$('#app').innerHTML=`<div class="top"><button class="btn" id="menu" data-a="menu" aria-label="Abrir listas">☰</button><h1>${esc(l.name)}</h1>
+<button class="btn" data-a="rename">Renomear</button><button class="btn" data-a="tasks">Etapas</button><button class="btn pri" data-a="report">Relatórios</button><button class="btn" data-a="periods">Períodos</button><button class="btn dng" data-a="delList">Excluir</button></div>
+<div class="tabs">${l.periods.map(x=>`<button class="tab ${x.id===p.id?'on':''}" data-a="per" data-id="${x.id}">${esc(x.name)}</button>`).join('')}</div>
+<div class="stats" id="stats"></div>
+<div class="tb"><input class="in" id="q" type="search" placeholder="Buscar empresa" value="${esc(Q)}">
+<div class="seg">${[['all','Todas'],['open','Pendentes'],['done','Concluídas']].map(([k,v])=>`<button class="${F===k?'on':''}" data-a="f" data-id="${k}">${v}</button>`).join('')}</div>
+<input class="in" id="addc" placeholder="Nova empresa e Enter"></div>
+<div class="wrap"><table><thead><tr><th>Empresa</th>${l.tasks.map(t=>`<th class="c">${esc(t.name)}</th>`).join('')}<th>Status</th><th>Observação</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>`;
+upd();save();
+}
+function upd(){
+const l=L(),p=P(l),n=l.companies.length,d=l.companies.filter(c=>stat(l,p,c)==='done').length,pc=n?Math.round(d/n*100):0;
+$('#stats').innerHTML=`<div><b>${n}</b><span>empresas</span></div><div><b>${d}</b><span>concluídas</span></div><div><b>${n-d}</b><span>pendentes</span></div><div><b>${pc}%</b><span>de ${esc(p.name)}</span></div><div class="bar"><i style="width:${pc}%"></i></div>`;
+const q=Q.toLowerCase(),rs=l.companies.filter(c=>(!q||c.name.toLowerCase().includes(q))&&(F==='all'||(F==='done')===(stat(l,p,c)==='done')));
+$('#rows').innerHTML=rs.map(c=>{const s=stat(l,p,c);return`<tr data-c="${c.id}"><td><input class="ni" data-f="name" value="${esc(c.name)}" aria-label="Nome da empresa"></td>${l.tasks.map(t=>`<td class="c"><input type="checkbox" data-t="${t.id}" ${ck(l,p,c,t)?'checked':''} aria-label="${esc(t.name)}"></td>`).join('')}<td><span class="st ${s}">${LBL[s]}</span></td><td><input class="no" data-f="note" value="${esc(c.note)}" placeholder="Anotar..." aria-label="Observação"></td><td><button class="x" data-a="delC" aria-label="Remover empresa">×</button></td></tr>`}).join('')||`<tr><td colspan="${l.tasks.length+4}" class="empty">${n?'Nenhuma empresa nesse filtro.':'Lista vazia. Digite o nome de uma empresa acima e aperte Enter.'}</td></tr>`;
+}
+function modal(title,body,acts){
+const o=document.createElement('div');o.className='ov';
+o.innerHTML=`<div class="md" role="dialog" aria-label="${esc(title)}"><h3>${esc(title)}</h3><div>${body}</div><div class="ma"></div></div>`;
+const close=()=>o.remove();
+acts.forEach(a=>{const b=document.createElement('button');b.className='btn '+(a.c||'');b.textContent=a.t;b.onclick=()=>{if(!a.f||a.f(o)!==false)close()};o.querySelector('.ma').append(b)});
+o.addEventListener('mousedown',e=>{if(e.target===o)close()});
+document.body.append(o);const i=o.querySelector('input');if(i){i.focus();i.select()}
+o.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();o.querySelector('.pri')?.click()}if(e.key==='Escape')close()});
+return o;
+}
+const ask=(title,val,cb)=>modal(title,`<input class="in" style="width:100%" value="${esc(val)}">`,[{t:'Cancelar'},{t:'Salvar',c:'pri',f:o=>{const v=o.querySelector('input').value.trim();if(!v)return false;cb(v)}}]);
+function editor(title,arr,min,cb){
+const row=a=>`<div class="er"><input class="in" data-id="${a.id||''}" value="${esc(a.name)}"><button class="btn" data-rm aria-label="Remover">×</button></div>`;
+const o=modal(title,`<div id="er">${arr.map(row).join('')}</div><button class="btn" id="ad">+ Adicionar</button>`,[{t:'Cancelar'},{t:'Salvar',c:'pri',f:o=>{
+const out=[...o.querySelectorAll('.er input')].map(i=>({id:i.dataset.id||uid(),name:i.value.trim()})).filter(x=>x.name);
+if(out.length<min)return false;cb(out)}}]);
+o.addEventListener('click',e=>{if(e.target.id==='ad'){o.querySelector('#er').insertAdjacentHTML('beforeend',row({name:''}));o.querySelector('#er').lastChild.querySelector('input').focus()}
+if(e.target.matches('[data-rm]'))e.target.parentNode.remove()});
+}
+function look(){
+const t=S.theme,old=document.querySelector('.dr');if(old){old.remove();return}
+const th=[['auto','Automático','linear-gradient(90deg,#fff 50%,#1a1d24 50%)'],['light','Claro','#f5f6f8'],['dark','Escuro','#1a1d24'],['sepia','Sépia','#efe7d6'],['midnight','Meia-noite','#0f1526']];
+const ac=['#4f46e5','#2563eb','#0891b2','#059669','#65a30d','#d97706','#e11d48','#9333ea','#475569'];
+const d=document.createElement('div');d.className='dr';
+d.innerHTML=`<div class="top" style="margin:0"><h3 style="flex:1">Aparência</h3><button class="btn" data-x>Fechar</button></div>
+<h4>Tema</h4><div class="g">${th.map(([k,n,bg])=>`<button class="th ${t.mode===k?'on':''}" data-m="${k}">${n}<i style="background:${bg};border:1px solid var(--ln)"></i></button>`).join('')}</div>
+<h4>Cor de destaque</h4><div class="sw">${ac.map(c=>`<button style="background:${c}" class="${t.accent===c?'on':''}" data-c="${c}" aria-label="${c}"></button>`).join('')}<input type="color" value="${t.accent}" data-cc aria-label="Cor personalizada"></div>
+<h4>Cantos</h4><div class="seg">${[['4px','Retos'],['12px','Suaves'],['22px','Redondos']].map(([v,n])=>`<button class="${t.round===v?'on':''}" data-r="${v}" style="flex:1">${n}</button>`).join('')}</div>
+<h4>Backup dos dados</h4><div style="display:flex;gap:8px"><button class="btn" data-bk>Gerar backup</button><button class="btn" data-rs>Restaurar</button></div><textarea class="in" id="bk" placeholder="O backup aparece aqui. Para restaurar, cole o texto e clique em Restaurar."></textarea>
+<p style="color:var(--mu);font-size:13px">Seus dados ficam salvos na sua conta.</p>`;
+d.onclick=e=>{const b=e.target.closest('button,input');if(!b)return;
+if('x'in b.dataset)return d.remove();
+if(b.dataset.m)t.mode=b.dataset.m;else if(b.dataset.c)t.accent=b.dataset.c;else if(b.dataset.r)t.round=b.dataset.r;
+else if('bk'in b.dataset){$('#bk').value=JSON.stringify(S);return}
+else if('rs'in b.dataset){try{const j=JSON.parse($('#bk').value);if(!j.lists)throw 0;S=j;render();d.remove()}catch(x){$('#bk').value='';$('#bk').placeholder='Backup inválido. Cole o texto completo gerado antes.'}return}
+else return;
+save();render();d.remove();look()};
+d.addEventListener('input',e=>{if('cc'in e.target.dataset){t.accent=e.target.value;applyTheme();save()}});
+document.body.append(d);
+}
+const R={t:'month',p:null,w:0},DN=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],pad=n=>String(n).padStart(2,'0'),fd=d=>pad(d.getDate())+'/'+pad(d.getMonth()+1),fdt=ts=>{const d=new Date(ts);return fd(d)+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+const wk=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-(x.getDay()+6)%7);return x.getTime()};
+const addD=(t,n)=>{const x=new Date(t);x.setDate(x.getDate()+n);return x.getTime()};
+const pend=(l,p)=>l.companies.filter(c=>stat(l,p,c)!=='done').map(c=>[c.name,l.tasks.filter(t=>!ck(l,p,c,t)).map(t=>t.name).join(', '),c.note]);
+const nowS=()=>{const d=new Date();return fd(d)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes())};
+function reportData(){
+const l=L(),n=l.companies.length,pct=(a,b)=>(b?Math.round(a/b*100):0)+'%';
+if(R.t==='month'){
+const p=l.periods.find(x=>x.id===R.p)||P(l);R.p=p.id;
+const s={done:0,part:0,pend:0};l.companies.forEach(c=>s[stat(l,p,c)]++);const m=pend(l,p);
+return{list:l.name,title:'Relatório mensal: '+p.name,stats:[['Empresas',n],['Concluídas',s.done],['Em andamento',s.part],['Pendentes',s.pend],['Conclusão',pct(s.done,n)]],
+secs:[{h:'Por etapa',cols:['Etapa','Feitas','Faltam','%'],rows:l.tasks.map(t=>{const d=l.companies.filter(c=>ck(l,p,c,t)).length;return[t.name,d,n-d,pct(d,n)]})},
+{h:'Pendências ('+m.length+')',cols:['Empresa','Etapas faltantes','Observação'],rows:m}]};
+}
+const a=R.w,b=addD(a,7),ev=[];let und=0;
+for(const k in l.checks){
+const v=l.checks[k],[pi,ci,ti]=k.split('|'),pp=l.periods.find(x=>x.id===pi);
+const historico=l.periodData?.[pi];
+const c=(historico?.companies||l.companies).find(x=>x.id===ci),t=(historico?.tasks||l.tasks).find(x=>x.id===ti);
+if(!pp||!c||!t)continue;if(v<1e12){und++;continue}if(v>=a&&v<b)ev.push({v,pp,c,t})}
+ev.sort((x,y)=>x.v-y.v);
+const p=P(l),m=pend(l,p),days=DN.map((d,i)=>{const s=addD(a,i);return[d+' '+fd(new Date(s)),ev.filter(e=>e.v>=s&&e.v<addD(a,i+1)).length]});
+return{list:l.name,title:'Relatório semanal: '+fd(new Date(a))+' a '+fd(new Date(addD(a,6)))+'/'+new Date(addD(a,6)).getFullYear(),
+stats:[['Marcações na semana',ev.length],['Empresas atendidas',new Set(ev.map(e=>e.c.id)).size],['Pendentes em '+p.name,m.length]],
+note:und?und+' marcação(ões) antiga(s), feitas antes desta função, não têm data e ficam fora do semanal.':'',
+secs:[{h:'Por dia',cols:['Dia','Marcações'],rows:days},{h:'Por etapa',cols:['Etapa','Marcações'],rows:l.tasks.map(t=>[t.name,ev.filter(e=>e.t.id===t.id).length])},
+{h:'O que foi feito',cols:['Data','Empresa','Etapa','Período'],rows:ev.map(e=>[fdt(e.v),e.c.name,e.t.name,e.pp.name])},
+{h:'Pendências em '+p.name+' ('+m.length+')',cols:['Empresa','Etapas faltantes','Observação'],rows:m}]};
+}
+const repHtml=r=>`<h1>${esc(r.list)}</h1><p style="color:var(--mu);margin:0 0 16px">${esc(r.title)}. Emitido em ${nowS()}.</p><div class="rst">${r.stats.map(([k,v])=>`<div><b>${esc(v)}</b><span>${esc(k)}</span></div>`).join('')}</div>${r.note?`<p style="color:var(--mu);font-size:13px">${esc(r.note)}</p>`:''}`+r.secs.map(s=>`<h2>${esc(s.h)}</h2>`+(s.rows.length?`<table class="rt"><thead><tr>${s.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${s.rows.map(x=>`<tr>${x.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'<p style="color:var(--mu)">Nenhum registro.</p>')).join('');
+const repText=r=>[r.list,r.title,'Emitido em '+nowS(),'',r.stats.map(x=>x.join(': ')).join(' | '),...r.secs.flatMap(s=>['','== '+s.h+' ==',...(s.rows.length?s.rows.map(x=>'- '+x.filter(v=>v!=='').join(' | ')):['Nenhum registro.'])])].join('\n');
+function openReport(){
+let o=$('.rp');
+if(!o){o=document.createElement('div');o.className='rp';document.body.append(o);
+o.onclick=e=>{const b=e.target.closest('[data-rp]');if(!b)return;const k=b.dataset.rp;
+if(k==='per')return;if(k==='x')return o.remove();
+if(k==='month'||k==='week')R.t=k;
+else if(k==='prev')R.w=addD(R.w,-7);else if(k==='next')R.w=addD(R.w,7);else if(k==='today')R.w=wk(Date.now());
+else if(k==='print'){try{window.print()}catch(x){}return}
+else if(k==='copy'){const t=repText(reportData()),f=()=>modal('Copie o relatório',`<textarea class="in" style="width:100%;height:240px" readonly>${esc(t)}</textarea>`,[{t:'Fechar'}]);
+try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar texto',1500)},f)}catch(x){f()}return}
+openReport()};
+o.onchange=e=>{if(e.target.dataset.rp==='per'){R.p=e.target.value;openReport()}};
+}
+if(!R.w)R.w=wk(Date.now());
+const l=L(),r=reportData();
+const ctl=R.t==='month'?`<select class="in" data-rp="per" aria-label="Período">${l.periods.map(x=>`<option value="${x.id}" ${x.id===R.p?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`:`<button class="btn" data-rp="prev" aria-label="Semana anterior">‹</button><button class="btn" data-rp="today">Esta semana</button><button class="btn" data-rp="next" aria-label="Próxima semana">›</button>`;
+o.innerHTML=`<div class="rbar"><div class="seg"><button class="${R.t==='month'?'on':''}" data-rp="month">Mensal</button><button class="${R.t==='week'?'on':''}" data-rp="week">Semanal</button></div>${ctl}<span class="sp"></span><button class="btn" data-rp="copy">Copiar texto</button><button class="btn pri" data-rp="print">Imprimir / PDF</button><button class="btn" data-rp="x">Fechar</button></div><div class="rbody">${repHtml(r)}</div>`;
+}
+document.addEventListener('click',e=>{
+const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,l=L(),id=b.dataset.id;
+document.body.classList.remove('sbo');
+if(a==='list'){S.cur=id;Q='';render()}
+else if(a==='menu'){document.body.classList.add('sbo')}
+else if(a==='per'){S.per[l.id]=id;render()}
+else if(a==='f'){F=id;render()}
+else if(a==='look')look();
+else if(a==='report')openReport();
+else if(a==='newList')ask('Nome da nova lista','',v=>{const p={id:uid(),name:'Geral'},x={id:uid(),name:v,tasks:[{id:uid(),name:'Feito'}],periods:[p],companies:[],checks:{}};S.lists.push(x);S.cur=x.id;S.per[x.id]=p.id;render()});
+else if(a==='rename')ask('Renomear lista',l.name,v=>{l.name=v;render()});
+else if(a==='tasks')editor('Etapas (colunas de marcar)',l.tasks,1,v=>{l.tasks=v;render()});
+else if(a==='periods')editor('Períodos (abas, ex.: meses)',l.periods,1,v=>{l.periods=v;render()});
+else if(a==='delList')modal('Excluir lista?',`<p>A lista <b>${esc(l.name)}</b> e todas as marcações serão apagadas.</p>`,[{t:'Cancelar'},{t:'Excluir',c:'dng',f:()=>{S.lists=S.lists.filter(x=>x.id!==l.id);render()}}]);
+else if(a==='delC'){const c=l.companies.find(x=>x.id===b.closest('tr').dataset.c);modal('Remover empresa?',`<p>Remover <b>${esc(c.name)}</b> da lista?</p>`,[{t:'Cancelar'},{t:'Remover',c:'dng',f:()=>{l.companies=l.companies.filter(x=>x!==c);save();upd()}}])}
+});
+document.addEventListener('change',e=>{
+const i=e.target,tr=i.closest('tr[data-c]');if(!tr)return;const l=L(),p=P(l);
+if(i.dataset.t){const k=p.id+'|'+tr.dataset.c+'|'+i.dataset.t;if(i.checked)l.checks[k]=Date.now();else delete l.checks[k];save();upd();
+const s=document.querySelector('#sb [data-id="'+l.id+'"] small');if(s)s.textContent=l.companies.filter(c=>stat(l,p,c)==='done').length+'/'+l.companies.length}
+else if(i.dataset.f){const c=l.companies.find(x=>x.id===tr.dataset.c);const v=i.value.trim();if(i.dataset.f==='name'&&!v){i.value=c.name;return}c[i.dataset.f]=v;save()}
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){Q=e.target.value;upd()}});
+document.addEventListener('keydown',e=>{
+if(e.target.id==='addc'&&e.key==='Enter'&&e.target.value.trim()){L().companies.push({id:uid(),name:e.target.value.trim(),note:''});e.target.value='';save();upd();$('#rows').lastElementChild?.scrollIntoView({block:'nearest'})}
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>S&&S.theme.mode==='auto'&&applyTheme());
+Auth.start(d=>{S=d||seed();render()});
+</script>
+<script src="navegacao-colunas.js"></script>
+<script src="campos-personalizados.js"></script>
+<script src="periodo-edicao.js"></script>
+
+</body>
+</html>
